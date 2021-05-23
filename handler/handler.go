@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"encoding/json"
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"pica.go/api"
+	"strconv"
 	"strings"
 )
 
@@ -13,7 +15,7 @@ func LoginCheck(ctx *gin.Context) {
 	result := api.Login(username, password)
 
 	if result["code"] == 200 {
-		// store token to the session
+		// store token to the cookie
 		ctx.SetCookie("token", result["data"].(*simplejson.Json).MustString(),
 			3*24*60*60, /*seconds*/
 			"/",
@@ -80,17 +82,38 @@ func GetComic(ctx *gin.Context) {
 
 func ReadComic(ctx *gin.Context) {
 	token, _ := ctx.Request.Cookie("token")
-	comicId, order, page := ctx.Param("comicId"), ctx.Param("order"), ctx.Query("page")
+	comicId, order := ctx.Param("comicId"), ctx.Param("order")
 
-	if page == "" {
-		page = "1"
+	// Fetch the first page of images
+	page1 := api.EpisodeDetail(token.Value, comicId, order, "1")
+
+	ep := page1["data"].(*simplejson.Json).MustMap()["ep"].(map[string]interface{})["title"] // episode title
+	pages := page1["data"].(*simplejson.Json).MustMap()["pages"].(map[string]interface{})    // images of page 1
+
+	imagesInPage1 := pages["docs"].([]interface{}) // A variable to store all images in this episode
+
+	pageCount, _ := pages["pages"].(json.Number).Int64()  // Total page count
+	imageCount, _ := pages["total"].(json.Number).Int64() // Total page count
+
+	images := make([]interface{}, 0, imageCount)
+
+	images = addImages(images, imagesInPage1)
+
+	if pageCount > 1 {
+		// if there are more than one page, fetch other pages of images
+		for i := 2; i <= int(pageCount); i++ {
+			pageI := api.EpisodeDetail(token.Value, comicId, order, strconv.Itoa(i))
+			imagesInPageI := pageI["data"].(*simplejson.Json).MustMap()["pages"].(map[string]interface{})["docs"].([]interface{})
+			images = addImages(images, imagesInPageI)
+		}
 	}
 
-	images := api.EpisodeDetail(token.Value, comicId, order, page)
+	ctx.HTML(http.StatusOK, "episode.html", map[string]interface{}{"ep": ep, "images": images})
+}
 
-	pages := images["data"].(*simplejson.Json).MustMap()["pages"].(map[string]interface{})["docs"]
-
-	ep := images["data"].(*simplejson.Json).MustMap()["ep"].(map[string]interface{})["title"]
-
-	ctx.HTML(http.StatusOK, "episode.html", map[string]interface{}{"pages": pages, "ep": ep})
+func addImages(images []interface{}, imagesN []interface{}) []interface{} {
+	for _, img := range imagesN {
+		images = append(images, img)
+	}
+	return images
 }

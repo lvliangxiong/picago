@@ -21,6 +21,8 @@ func Init() {
 		pica.POST("/loginCheck", handler.LoginCheck)
 		pica.GET("/img", handler.GetImage)
 		pica.GET("/comics", handler.GetComics)
+		pica.GET("/comic/:comicId", handler.GetComic)
+		pica.GET("/comic/:comicId/episode/:order", handler.ReadComic)
 	}
 
 	// Init configuration

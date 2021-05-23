@@ -2,9 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{{.ep}}</title>
+    <style>
+        img {
+            width: 500px;
+            display: block;
+            margin: auto;
+        }
+    </style>
 </head>
 <body>
+
+{{range .pages}}
+<img src="/pica/img?fileServer={{.media.fileServer}}&path={{.media.path}}">
+{{end}}
 
 </body>
 </html>

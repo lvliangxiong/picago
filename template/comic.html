@@ -2,9 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{{.info.title}}</title>
+    <style>
+        a {
+            display: inline-block;
+        }
+
+        .episode_list {
+            width: 600px;
+        }
+
+    </style>
 </head>
 <body>
+
+<div class="comic">
+
+    <div class="comic_cover">
+        {{ $thumb := .info.thumb }}
+        <img src="/pica/img?fileServer={{$thumb.fileServer}}&path={{$thumb.path}}">
+    </div>
+
+    <div class="episode_list">
+        {{ $comicId := .info._id }}
+        {{ range .episodes }}
+        <a href="/pica/comic/{{$comicId}}/episode/{{.order}}">
+            <div class="ep_{{.order}}">
+                {{.title}}
+            </div>
+        </a>
+        {{ end }}
+    </div>
+
+</div>
 
 </body>
 </html>

@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Comics</title>
-
     <style>
         .comic {
             display: inline-block;
@@ -23,10 +22,10 @@
 </head>
 <body>
 
-{{range $i, $v := .}}
+{{range .}}
 
 <div class="comic">
-    <a href="">
+    <a href="/pica/comic/{{._id}}">
         <img src="/pica/img?fileServer={{.thumb.fileServer}}&path={{.thumb.path}}">
     </a>
     <span style="display: block">{{.title}}</span>

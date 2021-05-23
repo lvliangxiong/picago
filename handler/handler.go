@@ -60,3 +60,37 @@ func GetComics(ctx *gin.Context) {
 		ctx.HTML(http.StatusOK, "comics.html", comics)
 	}
 }
+
+func GetComic(ctx *gin.Context) {
+	token, _ := ctx.Request.Cookie("token")
+	comicId, page := ctx.Param("comicId"), ctx.Query("page")
+	if page == "" {
+		page = "1"
+	}
+	comicInfo := api.ComicInfo(token.Value, comicId)
+	epInfo := api.EpisodeInfo(token.Value, comicId, page)
+
+	comic := map[string]interface{}{}
+
+	comic["episodes"] = epInfo["data"].(*simplejson.Json).MustMap()["docs"]
+	comic["info"] = comicInfo["data"].(*simplejson.Json).MustMap()
+
+	ctx.HTML(http.StatusOK, "comic.html", comic)
+}
+
+func ReadComic(ctx *gin.Context) {
+	token, _ := ctx.Request.Cookie("token")
+	comicId, order, page := ctx.Param("comicId"), ctx.Param("order"), ctx.Query("page")
+
+	if page == "" {
+		page = "1"
+	}
+
+	images := api.EpisodeDetail(token.Value, comicId, order, page)
+
+	pages := images["data"].(*simplejson.Json).MustMap()["pages"].(map[string]interface{})["docs"]
+
+	ep := images["data"].(*simplejson.Json).MustMap()["ep"].(map[string]interface{})["title"]
+
+	ctx.HTML(http.StatusOK, "episode.html", map[string]interface{}{"pages": pages, "ep": ep})
+}

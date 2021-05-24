@@ -22,7 +22,7 @@
 </head>
 <body>
 
-{{range .}}
+{{range .comics}}
 
 <div class="comic">
     <a href="/pica/comic/{{._id}}">
@@ -31,6 +31,14 @@
     <span style="display: block">{{.title}}</span>
 </div>
 
+{{end}}
+
+{{if ne .previousPage 0}}
+<button><a href="/pica/comics?category={{.category}}&page={{.previousPage}}">Previous Page</a></button>
+{{end}}
+
+{{if ne .nextPage 0}}
+<button><a href="/pica/comics?category={{.category}}&page={{.nextPage}}">Next Page</a></button>
 {{end}}
 
 </body>

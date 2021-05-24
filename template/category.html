@@ -25,7 +25,7 @@
 {{range .}}
 
 <div class="category">
-    <a href="{{if .link}}{{.link}}{{else}}/pica/comics?category={{.title}}{{end}}">
+    <a href="{{if .link}}{{.link}}{{else}}/pica/comics?category={{.title}}{{end}}&page=1">
         <img src="/pica/img?fileServer={{.thumb.fileServer}}&path={{.thumb.path}}">
     </a>
     <span style="display: block">{{.title}}</span>

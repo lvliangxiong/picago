@@ -19,8 +19,28 @@ func GetComics(ctx *gin.Context) {
 		}
 		result := api.SearchByKeywordAndCategory(token, "", []string{cat}, page, api.Newest)
 		if result["code"] == 200 {
+
 			comics := result["data"].(*simplejson.Json).MustMap()["docs"]
-			ctx.HTML(http.StatusOK, "comics.html", comics)
+
+			pageCount, _ := result["data"].(*simplejson.Json).MustMap()["pages"].(json.Number).Int64()
+			curPageNo, _ := strconv.Atoi(page)
+
+			var previousPage, nextPage int
+
+			previousPage = curPageNo - 1
+			if curPageNo < int(pageCount) {
+				nextPage = curPageNo + 1
+			} else {
+				nextPage = 0
+			}
+
+			data := map[string]interface{}{
+				"category":     cat,
+				"comics":       comics,
+				"previousPage": previousPage,
+				"nextPage":     nextPage,
+			}
+			ctx.HTML(http.StatusOK, "comics.html", data)
 		}
 	}
 }

@@ -35,6 +35,18 @@ func Init() {
 		}
 	}()
 
+	go func() {
+		for {
+			if conf.PublicToken != "" {
+				// Clear public token every two hours
+				time.Sleep(2 * time.Hour)
+				conf.PublicToken = ""
+			}
+			// Check every 2 minutes
+			time.Sleep(2 * time.Minute)
+		}
+	}()
+
 	// Start Server
 	r.Run(conf.ServerPort)
 }

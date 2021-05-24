@@ -7,8 +7,10 @@ import (
 )
 
 var (
-	SecretKey  string
-	ServerPort string
+	SecretKey                     string
+	ServerPort                    string
+	AllowRememberTokenForAllUsers bool
+	PublicToken                   string
 )
 
 var Headers = map[string]string{}
@@ -57,4 +59,5 @@ func Init() {
 	Headers["Image-Quality"] = config.Get("pica.headers.imageQuality").(string)
 
 	ServerPort = config.Get("server.port").(string)
+	AllowRememberTokenForAllUsers = config.Get("server.allowRememberToken").(bool)
 }

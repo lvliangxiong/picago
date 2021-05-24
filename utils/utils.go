@@ -4,6 +4,9 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
+	"github.com/gin-gonic/gin"
+	"pica.go/conf"
 )
 
 func CopyMap(m map[string]interface{}) map[string]interface{} {
@@ -33,4 +36,25 @@ func ComputeHmacSha256(message string, secret string) string {
 	h.Write([]byte(message))
 	sha := hex.EncodeToString(h.Sum(nil))
 	return sha
+}
+
+// Append all elements in slice2 to slice1
+func MergeSlices(slice1 []interface{}, slice2 []interface{}) []interface{} {
+	for _, item := range slice2 {
+		slice1 = append(slice1, item)
+	}
+	return slice1
+}
+
+func GetToken(ctx *gin.Context) (string, error) {
+	token, err := ctx.Cookie("token")
+	if err != nil || token == "" {
+		// When cookie has no token, check the public token
+		if conf.AllowRememberTokenForAllUsers && conf.PublicToken != "" {
+			return conf.PublicToken, nil
+		} else {
+			return "", errors.New("no token found")
+		}
+	}
+	return token, nil
 }

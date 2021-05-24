@@ -18,3 +18,4 @@ imageQuality = "original"
 
 [server]
 port = ":9002"
+allowRememberToken = true

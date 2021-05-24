@@ -18,6 +18,15 @@
             top: 50%;
             left: 50%;
         }
+
+        .button {
+            margin: 30px auto;
+            text-align: center;
+        }
+
+        a {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -33,13 +42,15 @@
 
 {{end}}
 
-{{if ne .previousPage 0}}
-<button><a href="/pica/comics?category={{.category}}&page={{.previousPage}}">Previous Page</a></button>
-{{end}}
+<div class="button">
+    {{if ne .previousPage 0}}
+    <button><a href="/pica/comics?category={{.category}}&page={{.previousPage}}">Previous Page</a></button>
+    {{end}}
 
-{{if ne .nextPage 0}}
-<button><a href="/pica/comics?category={{.category}}&page={{.nextPage}}">Next Page</a></button>
-{{end}}
+    {{if ne .nextPage 0}}
+    <button><a href="/pica/comics?category={{.category}}&page={{.nextPage}}">Next Page</a></button>
+    {{end}}
+</div>
 
 </body>
 </html>

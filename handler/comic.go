@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -91,6 +92,9 @@ func ReadComic(ctx *gin.Context) {
 		// Fetch the first page of images
 		page1 := api.EpisodeDetail(token, comicId, order, "1")
 
+		if page1["code"] != 200 {
+			ctx.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/pica/comic/%s", comicId))
+		}
 		ep := page1["data"].(*simplejson.Json).MustMap()["ep"].(map[string]interface{})["title"] // episode title
 		pages := page1["data"].(*simplejson.Json).MustMap()["pages"].(map[string]interface{})    // images of page 1
 
@@ -112,6 +116,15 @@ func ReadComic(ctx *gin.Context) {
 			}
 		}
 
-		ctx.HTML(http.StatusOK, "episode.html", map[string]interface{}{"ep": ep, "images": images})
+		orderNo, _ := strconv.Atoi(order)
+
+		ctx.HTML(http.StatusOK, "episode.html",
+			map[string]interface{}{
+				"ep":       ep,
+				"images":   images,
+				"comicId":  comicId,
+				"previous": orderNo - 1,
+				"next":     orderNo + 1,
+			})
 	}
 }

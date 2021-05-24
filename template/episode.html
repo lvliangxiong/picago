@@ -9,13 +9,42 @@
             display: block;
             margin: auto;
         }
+
+        .button {
+            text-align: center;
+        }
+
+        a {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 
+<div class="button">
+    {{if ne .previous 0}}
+    <button><a href="/pica/comic/{{.comicId}}/episode/{{.previous}}">Previous Episode</a></button>
+    {{end}}
+
+    <button><a href="/pica/comic/{{.comicId}}">Home</a></button>
+
+    <button><a href="/pica/comic/{{.comicId}}/episode/{{.next}}">Next Episode</a></button>
+</div>
+
 {{range .images}}
 <img src="/pica/img?fileServer={{.media.fileServer}}&path={{.media.path}}">
 {{end}}
+
+<div class="button">
+    {{if ne .previous 0}}
+    <button><a href="/pica/comic/{{.comicId}}/episode/{{.previous}}">Previous Episode</a></button>
+    {{end}}
+
+    <button><a href="/pica/comic/{{.comicId}}">Home</a></button>
+
+    <button><a href="/pica/comic/{{.comicId}}/episode/{{.next}}">Next Episode</a></button>
+</div>
+
 
 </body>
 </html>

@@ -40,6 +40,5 @@ func EpisodeDetail(token string, comicId string, order string, page string) map[
 }
 
 func ComicImage(token string, fileServer string, path string) gorequest.Response {
-	picture := sendImageRequest(fileServer, path, token)
-	return picture
+	return sendImageRequest(fileServer, path, token)
 }

@@ -13,10 +13,12 @@ import (
 )
 
 func send(url string, method string, authorization string, payload string) simplejson.Json {
+	url = "https://picaapi.picacomic.com" + url
 	headers := utils.CopyStringStringMap(conf.Headers)
 
-	url = "https://picaapi.picacomic.com" + url
+	request := gorequest.New()
 
+	// build the header
 	appUUID := UUID.NewV4().String()
 	host := "picaapi.picacomic.com"
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
@@ -26,14 +28,6 @@ func send(url string, method string, authorization string, payload string) simpl
 	signature = strings.ToLower(signature + timestamp + nonce + method + headers["Api-Key"])
 	signature = utils.ComputeHmacSha256(signature, conf.SecretKey)
 
-	request := gorequest.New()
-
-	if method == "GET" {
-		request.Get(url)
-	} else {
-		request.Post(url)
-	}
-
 	// update headers
 	headers["App-Uuid"] = appUUID
 	headers["Host"] = host
@@ -41,6 +35,12 @@ func send(url string, method string, authorization string, payload string) simpl
 	headers["Nonce"] = nonce
 	headers["Signature"] = signature
 	headers["Authorization"] = authorization
+
+	if method == "GET" {
+		request.Get(url)
+	} else {
+		request.Post(url)
+	}
 
 	setHeaders(request, headers)
 
@@ -60,30 +60,41 @@ func send(url string, method string, authorization string, payload string) simpl
 }
 
 func sendImageRequest(fileServer string, path string, authorization string) gorequest.Response {
-	headers := utils.CopyStringStringMap(conf.Headers)
 
-	url := fileServer + "/static/" + path
-
-	appUUID := UUID.NewV4().String()
-	host := strings.Replace(fileServer, "https://", "", 1)
-	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	nonce := strings.Replace(UUID.NewV4().String(), "-", "", -1)
-
-	signature := "static/" + path
-	signature = strings.ToLower(signature + timestamp + nonce + "GET" + headers["Api-Key"])
-	signature = utils.ComputeHmacSha256(signature, conf.SecretKey)
+	var (
+		headers map[string]string
+		url     string
+	)
 
 	request := gorequest.New()
+
+	if !strings.Contains(fileServer, "static") {
+		url = fileServer + "/static/" + path
+		headers = utils.CopyStringStringMap(conf.Headers)
+
+		appUUID := UUID.NewV4().String()
+		host := strings.Replace(fileServer, "https://", "", 1)
+		timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+		nonce := strings.Replace(UUID.NewV4().String(), "-", "", -1)
+
+		signature := "static/" + path
+		signature = strings.ToLower(signature + timestamp + nonce + "GET" + headers["Api-Key"])
+		signature = utils.ComputeHmacSha256(signature, conf.SecretKey)
+
+		// update headers
+		headers["App-Uuid"] = appUUID
+		headers["Host"] = host
+		headers["Time"] = timestamp
+		headers["Nonce"] = nonce
+		headers["Signature"] = signature
+		headers["Authorization"] = authorization
+	} else {
+		url = fileServer + path
+		url = strings.Replace(url, "wikawika.xyz", "storage.wikawika.xyz", 1)
+		headers = map[string]string{}
+	}
+
 	request.Get(url)
-
-	// update headers
-	headers["App-Uuid"] = appUUID
-	headers["Host"] = host
-	headers["Time"] = timestamp
-	headers["Nonce"] = nonce
-	headers["Signature"] = signature
-	headers["Authorization"] = authorization
-
 	setHeaders(request, headers)
 
 	resp, _, _ := request.TLSClientConfig(&tls.Config{InsecureSkipVerify: true}).End()

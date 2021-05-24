@@ -17,12 +17,12 @@ func Init() {
 	pica.Use(middleware.ValidateToken)
 
 	{
-		pica.GET("/index", handler.ShowCategory)
 		pica.POST("/loginCheck", handler.LoginCheck)
-		pica.GET("/img", handler.GetImage)
+		pica.GET("/index", handler.ShowCategory)
 		pica.GET("/comics", handler.GetComics)
 		pica.GET("/comic/:comicId", handler.GetComic)
 		pica.GET("/comic/:comicId/episode/:order", handler.ReadComic)
+		pica.GET("/img", handler.GetImage)
 	}
 
 	// Init configuration

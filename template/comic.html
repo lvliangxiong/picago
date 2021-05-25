@@ -3,34 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>{{.info.title}}</title>
-    <style>
-        .comic_cover {
-            text-align: center;
-        }
 
-        img {
-            width: 200px;
-            top: 50%;
-            left: 50%;
-        }
-
-        a {
-            display: inline-block;
-        }
-
-        .episode_list {
-            width: 500px;
-            margin: auto;
-        }
-    </style>
+    <link id="css" href="/pica/static/css/pc/main.css" rel="stylesheet" type="text/css">
+    <script src="/pica/static/js/main.js"></script>
 </head>
 <body>
 
-<div class="comic">
+<script>
+    if (!IsPC()) {
+        var css = document.getElementById("css")
+        css.setAttribute("href", "/pica/static/css/mobile/main.css")
+    }
 
-    <div class="comic_cover">
-        {{ $thumb := .info.thumb }}
-        <img src="/pica/img?fileServer={{$thumb.fileServer}}&path={{$thumb.path}}">
+    // alert(navigator.userAgent)
+</script>
+
+
+<div>
+
+    {{ $thumb := .info.thumb }}
+
+    <div class="comic_detail">
+        <img class="comic_cover" src="/pica/img?fileServer={{$thumb.fileServer}}&path={{$thumb.path}}">
     </div>
 
     <div class="episode_list">

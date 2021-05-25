@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>{{.ep}}</title>
+
+    <link id="css" href="/pica/static/css/pc/main.css" rel="stylesheet" type="text/css">
+    <script src="/pica/static/js/main.js"></script>
     <style>
-        img {
-            width: 500px;
-            display: block;
-            margin: auto;
-        }
 
-        .button {
-            text-align: center;
-        }
-
-        a {
-            text-decoration: none;
-        }
     </style>
 </head>
 <body>
+
+<script>
+    if (!IsPC()) {
+        var css = document.getElementById("css")
+        css.setAttribute("href", "/pica/static/css/mobile/main.css")
+    }
+
+    // alert(navigator.userAgent)
+</script>
 
 <div class="button">
     {{if ne .previous 0}}
@@ -31,9 +31,11 @@
     <button><a href="/pica/comic/{{.comicId}}/episode/{{.next}}">Next Episode</a></button>
 </div>
 
-{{range .images}}
-<img src="/pica/img?fileServer={{.media.fileServer}}&path={{.media.path}}">
-{{end}}
+<div class="episode">
+    {{range .images}}
+    <img class="episode_image" src="/pica/img?fileServer={{.media.fileServer}}&path={{.media.path}}">
+    {{end}}
+</div>
 
 <div class="button">
     {{if ne .previous 0}}

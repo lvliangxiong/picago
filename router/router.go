@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"pica.go/conf"
 	"pica.go/handler"
 	"pica.go/middleware"
@@ -11,7 +12,7 @@ import (
 func Init() {
 	r := gin.Default()
 
-	r.LoadHTMLGlob("template/*")
+	r.LoadHTMLGlob("template/*.html")
 
 	pica := r.Group("/pica")
 	pica.Use(middleware.ValidateToken)
@@ -23,6 +24,7 @@ func Init() {
 		pica.GET("/comic/:comicId", handler.GetComic)
 		pica.GET("/comic/:comicId/episode/:order", handler.ReadComic)
 		pica.GET("/img", handler.GetImage)
+		pica.StaticFS("/static", http.Dir("./static"))
 	}
 
 	// Init configuration

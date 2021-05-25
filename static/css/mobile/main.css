@@ -1,0 +1,46 @@
+.category, .comic {
+    display: inline-block;
+    width: 400px;
+    height: 400px;
+    text-align: center;
+    /*border: 1px solid #000;*/
+}
+
+.comic_detail {
+    text-align: center;
+}
+
+.comic_detail > .comic_cover {
+    height: 800px;
+}
+
+.category_cover, .comic_cover {
+    height: 350px;
+    top: 50%;
+    left: 50%;
+}
+
+.button {
+    margin: 30px auto;
+    text-align: center;
+}
+
+a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+body, a, .button, span {
+    font-size: xx-large;
+}
+
+.episode_list {
+    width: 500px;
+    margin: auto;
+}
+
+.episode_image {
+    width: 1000px;
+    display: block;
+    margin: auto;
+}

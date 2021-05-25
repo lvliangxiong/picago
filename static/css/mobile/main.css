@@ -44,3 +44,16 @@ body, a, .button, span {
     display: block;
     margin: auto;
 }
+
+#input {
+    zoom: 3;
+}
+
+#button_td {
+    text-align: center;
+    padding-top: 20px
+}
+
+span {
+    display: block
+}

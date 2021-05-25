@@ -4,18 +4,26 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"pica.go/utils"
+	"strings"
 )
 
 func ValidateToken(ctx *gin.Context) {
-	if ctx.Request.URL.Path != "/pica/loginCheck" {
-		_, err := utils.GetToken(ctx)
-
-		// 没有 token 就去登录
-		if err != nil {
-			ctx.HTML(http.StatusOK, "login.html", nil)
-			ctx.Abort()
-			return
-		}
+	// let login request and static request go
+	if ctx.Request.URL.Path == "/pica/loginCheck" || strings.HasPrefix(ctx.Request.URL.Path, "/pica/static") {
+		ctx.Next()
+		return
 	}
+
+	// Check token
+	_, err := utils.GetToken(ctx)
+
+	// without token, you should login
+	if err != nil {
+		ctx.HTML(http.StatusOK, "login.html", nil)
+		ctx.Abort()
+		return
+	}
+
+	// with token, you should go
 	ctx.Next()
 }

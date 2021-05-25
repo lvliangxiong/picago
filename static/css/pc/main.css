@@ -40,3 +40,21 @@ a {
     display: block;
     margin: auto;
 }
+
+.login {
+    width: 200px;
+    margin: 50px auto
+}
+
+#input {
+    zoom: 3;
+}
+
+#button_td {
+    text-align: center;
+    padding-top: 20px
+}
+
+span {
+    display: block
+}

@@ -3,10 +3,10 @@ package api
 import (
 	"crypto/tls"
 	"github.com/bitly/go-simplejson"
+	"github.com/lvliangxiong/pica.go/conf"
+	"github.com/lvliangxiong/pica.go/utils"
 	"github.com/parnurzeal/gorequest"
-	UUID "github.com/satori/go.uuid"
-	"pica.go/conf"
-	"pica.go/utils"
+	uuid "github.com/satori/go.uuid"
 	"strconv"
 	"strings"
 	"time"
@@ -19,10 +19,10 @@ func send(url string, method string, authorization string, payload string) simpl
 	request := gorequest.New()
 
 	// build the header
-	appUUID := UUID.NewV4().String()
+	appUUID := uuid.NewV4().String()
 	host := "picaapi.picacomic.com"
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	nonce := strings.Replace(UUID.NewV4().String(), "-", "", -1)
+	nonce := strings.Replace(uuid.NewV4().String(), "-", "", -1)
 
 	signature := strings.Replace(url, "https://picaapi.picacomic.com/", "", -1)
 	signature = strings.ToLower(signature + timestamp + nonce + method + headers["Api-Key"])
@@ -72,10 +72,10 @@ func sendImageRequest(fileServer string, path string, authorization string) gore
 		url = fileServer + "/static/" + path
 		headers = utils.CopyStringStringMap(conf.Headers)
 
-		appUUID := UUID.NewV4().String()
+		appUUID := uuid.NewV4().String()
 		host := strings.Replace(fileServer, "https://", "", 1)
 		timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-		nonce := strings.Replace(UUID.NewV4().String(), "-", "", -1)
+		nonce := strings.Replace(uuid.NewV4().String(), "-", "", -1)
 
 		signature := "static/" + path
 		signature = strings.ToLower(signature + timestamp + nonce + "GET" + headers["Api-Key"])

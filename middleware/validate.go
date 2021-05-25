@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/lvliangxiong/pica.go/utils"
 	"net/http"
-	"pica.go/utils"
 	"strings"
 )
 

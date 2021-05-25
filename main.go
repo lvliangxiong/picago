@@ -1,7 +1,7 @@
 package main
 
 import (
-	"pica.go/router"
+	"github.com/lvliangxiong/pica.go/router"
 )
 
 func main() {

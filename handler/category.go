@@ -3,9 +3,9 @@ package handler
 import (
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
+	"github.com/lvliangxiong/pica.go/api"
+	"github.com/lvliangxiong/pica.go/utils"
 	"net/http"
-	"pica.go/api"
-	"pica.go/utils"
 )
 
 func ShowCategory(ctx *gin.Context) {

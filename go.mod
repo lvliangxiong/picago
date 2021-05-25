@@ -1,4 +1,4 @@
-module pica.go
+module github.com/lvliangxiong/pica.go
 
 go 1.15
 

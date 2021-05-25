@@ -2,9 +2,9 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/lvliangxiong/pica.go/api"
+	"github.com/lvliangxiong/pica.go/utils"
 	"net/http"
-	"pica.go/api"
-	"pica.go/utils"
 )
 
 func GetImage(ctx *gin.Context) {

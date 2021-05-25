@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"pica.go/conf"
+	"github.com/lvliangxiong/pica.go/conf"
 )
 
 func CopyMap(m map[string]interface{}) map[string]interface{} {

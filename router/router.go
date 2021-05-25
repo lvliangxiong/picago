@@ -2,10 +2,10 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/lvliangxiong/pica.go/conf"
+	"github.com/lvliangxiong/pica.go/handler"
+	"github.com/lvliangxiong/pica.go/middleware"
 	"net/http"
-	"pica.go/conf"
-	"pica.go/handler"
-	"pica.go/middleware"
 	"time"
 )
 

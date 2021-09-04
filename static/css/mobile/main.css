@@ -40,7 +40,7 @@ body, a, .button, span {
 }
 
 .episode_image {
-    width: 1000px;
+    width: 100%;
     display: block;
     margin: auto;
 }

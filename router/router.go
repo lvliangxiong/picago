@@ -1,18 +1,30 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/lvliangxiong/pica.go/conf"
-	"github.com/lvliangxiong/pica.go/handler"
-	"github.com/lvliangxiong/pica.go/middleware"
+	"embed"
+	"fmt"
+	"html/template"
+	"io/fs"
 	"net/http"
+	"os"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/lvliangxiong/picago/conf"
+	"github.com/lvliangxiong/picago/handler"
+	"github.com/lvliangxiong/picago/middleware"
 )
 
-func Init() {
+func Init(staticResources embed.FS, templates embed.FS) {
+	sr, err := fs.Sub(staticResources, "static")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, err.Error())
+	}
+
 	r := gin.Default()
 
-	r.LoadHTMLGlob("template/*.html")
+	t, _ := template.ParseFS(templates, "template/*.html")
+	r.SetHTMLTemplate(t)
 
 	pica := r.Group("/pica")
 	pica.Use(middleware.ValidateToken)
@@ -24,7 +36,7 @@ func Init() {
 		pica.GET("/comic/:comicId", handler.GetComic)
 		pica.GET("/comic/:comicId/episode/:order", handler.ReadComic)
 		pica.GET("/img", handler.GetImage)
-		pica.StaticFS("/static", http.Dir("./static"))
+		pica.StaticFS("/static", http.FS(sr))
 	}
 
 	// Init configuration

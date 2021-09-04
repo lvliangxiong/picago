@@ -1,48 +1,35 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
-	"net/url"
+	"github.com/lvliangxiong/picago/api/model"
 )
 
-// Fetch all hot searched keywords
-func HotSearchKeywords(token string) map[string]interface{} {
-	result := send("/keywords", "GET", token, "")
-
-	if code := result.Get("code").MustInt(); code != 200 {
-		return errorOutput(code, result.Get("error").MustString(), result.Get("message").MustString())
-	}
-
-	return successOutput(result.Get("data").Get("keywords"))
-}
-
-// Search comics according to keyword and page no
-func SearchByKeyword(token string, keyword string, page string) map[string]interface{} {
-	result := send(fmt.Sprintf("/comics/search?page=%s&q=%s", page, url.QueryEscape(keyword)),
-		"GET", token, "")
-
-	if code := result.Get("code").MustInt(); code != 200 {
-		return errorOutput(code, result.Get("error").MustString(), result.Get("message").MustString())
-	}
-
-	return successOutput(result.Get("data").Get("comics"))
-}
-
-func SearchByKeywordAndCategory(token string, keyword string, categories []string, page string, sort string) map[string]interface{} {
-	result := send(fmt.Sprintf(`/comics/advanced-search?page=%s`, page),
+// SearchByKeywordAndCategory fetch comics information from pica server according to token, keyword, category,
+// page and sort information provided, returns a model.Comic slice and additional pages formation.
+func SearchByKeywordAndCategory(
+	token string, keyword string, categories []string, pageStr string, sort string,
+) (code int, message interface{}, comics []model.Comic, page int, pages int, limit int, total int) {
+	resultMap := send(
+		fmt.Sprintf(`/comics/advanced-search?page=%s`, pageStr),
 		"POST", token,
-		fmt.Sprintf(`{"categories":%s, "sort":"%s", "keyword":"%s"}`, strArrToString(categories), sort, ""))
+		fmt.Sprintf(`{"categories":%s, "sort":"%s", "keyword":"%s"}`, fmt.Sprintf("%q", categories), sort, keyword),
+	)
 
-	if code := result.Get("code").MustInt(); code != 200 {
-		return errorOutput(code, result.Get("error").MustString(), result.Get("message").MustString())
+	if statusCode := int(resultMap["code"].(float64)); statusCode != 200 {
+		return statusCode, resultMap["message"], nil, 0, 0, 0, 0
 	}
 
-	return successOutput(result.Get("data").Get("comics"))
-}
+	data := resultMap["data"].(map[string]interface{})["comics"].(map[string]interface{})
 
-func strArrToString(strs []string) string {
-	for i, str := range strs {
-		strs[i] = `"` + str + `"`
-	}
-	return fmt.Sprint(strs)
+	code, message = 200, "success"
+	page, pages = int(data["page"].(float64)), int(data["pages"].(float64))
+	limit, total = int(data["limit"].(float64)), int(data["total"].(float64))
+
+	comicsJsonString, _ := json.Marshal(data["docs"])
+	comics = make([]model.Comic, limit, limit)
+	json.Unmarshal(comicsJsonString, &comics)
+
+	return
 }

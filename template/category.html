@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Pica Categories</title>
 
-    <link id="css" href="/pica/static/css/pc/main.css" rel="stylesheet" type="text/css">
+    <link href="/pica/static/css/pc/main.css" id="css" rel="stylesheet" type="text/css">
     <script src="/pica/static/js/main.js"></script>
 </head>
 <body>
@@ -21,10 +21,10 @@
 {{range .}}
 
 <div class="category">
-    <a href="{{if .link}}{{.link}}{{else}}/pica/comics?category={{.title}}{{end}}&page=1">
-        <img class="category_cover" src="/pica/img?fileServer={{.thumb.fileServer}}&path={{.thumb.path}}">
+    <a href="{{if .Link}}{{.Link}}{{else}}/pica/comics?category={{.Title}}{{end}}&page=1">
+        <img class="category_cover" src="/pica/img?fileServer={{.Thumb.FileServer}}&path={{.Thumb.Path}}">
     </a>
-    <span>{{.title}}</span>
+    <span>{{.Title}}</span>
 </div>
 
 {{end}}

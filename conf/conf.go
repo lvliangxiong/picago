@@ -1,10 +1,14 @@
 package conf
 
 import (
-	"errors"
+	_ "embed"
 	"fmt"
+
 	"github.com/pelletier/go-toml"
 )
+
+//go:embed pica.toml
+var conf []byte
 
 var (
 	SecretKey                     string
@@ -27,18 +31,18 @@ var headersRequired = []string{
 
 func Init() {
 	// Load conf file
-	config, _ := toml.LoadFile("conf/pica.toml")
+	config, _ := toml.LoadBytes(conf)
 
 	// Check conf required
 	for _, key := range picaRequired {
 		if !config.Has("pica." + key) {
-			panic(errors.New(fmt.Sprintf("configuration '%s' missing", key)))
+			panic(fmt.Errorf("configuration '%s' missing", key))
 		}
 	}
 
 	for _, key := range headersRequired {
 		if !config.Has("pica.headers." + key) {
-			panic(errors.New(fmt.Sprintf("configuration '%s' missing", key)))
+			panic(fmt.Errorf("configuration '%s' missing", key))
 		}
 	}
 

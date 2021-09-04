@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/lvliangxiong/pica.go/utils"
+	"github.com/lvliangxiong/picago/utils"
 	"net/http"
 	"strings"
 )

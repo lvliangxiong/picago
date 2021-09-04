@@ -2,9 +2,9 @@ package api
 
 import (
 	"crypto/tls"
-	"github.com/bitly/go-simplejson"
-	"github.com/lvliangxiong/pica.go/conf"
-	"github.com/lvliangxiong/pica.go/utils"
+	"encoding/json"
+	"github.com/lvliangxiong/picago/conf"
+	"github.com/lvliangxiong/picago/utils"
 	"github.com/parnurzeal/gorequest"
 	uuid "github.com/satori/go.uuid"
 	"strconv"
@@ -12,11 +12,9 @@ import (
 	"time"
 )
 
-func send(url string, method string, authorization string, payload string) simplejson.Json {
+func send(url string, method string, authorization string, payload string) map[string]interface{} {
 	url = "https://picaapi.picacomic.com" + url
 	headers := utils.CopyStringStringMap(conf.Headers)
-
-	request := gorequest.New()
 
 	// build the header
 	appUUID := uuid.NewV4().String()
@@ -28,7 +26,6 @@ func send(url string, method string, authorization string, payload string) simpl
 	signature = strings.ToLower(signature + timestamp + nonce + method + headers["Api-Key"])
 	signature = utils.ComputeHmacSha256(signature, conf.SecretKey)
 
-	// update headers
 	headers["App-Uuid"] = appUUID
 	headers["Host"] = host
 	headers["Time"] = timestamp
@@ -36,42 +33,37 @@ func send(url string, method string, authorization string, payload string) simpl
 	headers["Signature"] = signature
 	headers["Authorization"] = authorization
 
+	// Build and launch the request, obtain result
+	request := gorequest.New()
 	if method == "GET" {
 		request.Get(url)
 	} else {
 		request.Post(url)
 	}
-
 	setHeaders(request, headers)
-
 	request.TLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-
-	var body string
-
 	if method == "POST" {
 		request.Send(payload)
 	}
-	_, body, _ = request.End()
+	_, body, _ := request.End()
 
-	json, _ := simplejson.NewJson([]byte(body))
-
-	// return the result as a *Json pointer
-	return *json
+	// Return result as a map
+	result := make(map[string]interface{})
+	json.Unmarshal([]byte(body), &result)
+	return result
 }
 
 func sendImageRequest(fileServer string, path string, authorization string) gorequest.Response {
-
 	var (
 		headers map[string]string
 		url     string
 	)
 
-	request := gorequest.New()
-
 	if !strings.Contains(fileServer, "static") {
 		url = fileServer + "/static/" + path
-		headers = utils.CopyStringStringMap(conf.Headers)
 
+		// Build headers
+		headers = utils.CopyStringStringMap(conf.Headers)
 		appUUID := uuid.NewV4().String()
 		host := strings.Replace(fileServer, "https://", "", 1)
 		timestamp := strconv.FormatInt(time.Now().Unix(), 10)
@@ -81,7 +73,6 @@ func sendImageRequest(fileServer string, path string, authorization string) gore
 		signature = strings.ToLower(signature + timestamp + nonce + "GET" + headers["Api-Key"])
 		signature = utils.ComputeHmacSha256(signature, conf.SecretKey)
 
-		// update headers
 		headers["App-Uuid"] = appUUID
 		headers["Host"] = host
 		headers["Time"] = timestamp
@@ -94,9 +85,8 @@ func sendImageRequest(fileServer string, path string, authorization string) gore
 		headers = map[string]string{}
 	}
 
-	request.Get(url)
+	request := gorequest.New().Get(url)
 	setHeaders(request, headers)
-
 	resp, _, _ := request.TLSClientConfig(&tls.Config{InsecureSkipVerify: true}).End()
 	return resp
 }

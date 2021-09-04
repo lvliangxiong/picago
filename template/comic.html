@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{.info.title}}</title>
+    <title>{{.info.Title}}</title>
 
-    <link id="css" href="/pica/static/css/pc/main.css" rel="stylesheet" type="text/css">
+    <link href="/pica/static/css/pc/main.css" id="css" rel="stylesheet" type="text/css">
     <script src="/pica/static/js/main.js"></script>
 </head>
 <body>
@@ -21,18 +21,18 @@
 
 <div>
 
-    {{ $thumb := .info.thumb }}
+    {{ $thumb := .info.Thumb }}
 
     <div class="comic_detail">
-        <img class="comic_cover" src="/pica/img?fileServer={{$thumb.fileServer}}&path={{$thumb.path}}">
+        <img class="comic_cover" src="/pica/img?fileServer={{$thumb.FileServer}}&path={{$thumb.Path}}">
     </div>
 
     <div class="episode_list">
-        {{ $comicId := .info._id }}
+        {{ $comicId := .info.Id }}
         {{ range .episodes }}
-        <a href="/pica/comic/{{$comicId}}/episode/{{.order}}">
-            <div class="ep_{{.order}}">
-                {{.title}}
+        <a href="/pica/comic/{{$comicId}}/episode/{{.Order}}">
+            <div class="ep_{{.Order}}">
+                {{.Title}}
             </div>
         </a>
         {{ end }}

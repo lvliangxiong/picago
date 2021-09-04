@@ -2,13 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{.ep}}</title>
+    <title>{{.episode.Title}}</title>
 
-    <link id="css" href="/pica/static/css/pc/main.css" rel="stylesheet" type="text/css">
+    <link href="/pica/static/css/pc/main.css" id="css" rel="stylesheet" type="text/css">
     <script src="/pica/static/js/main.js"></script>
-    <style>
-
-    </style>
 </head>
 <body>
 
@@ -33,7 +30,7 @@
 
 <div class="episode">
     {{range .images}}
-    <img class="episode_image" src="/pica/img?fileServer={{.media.fileServer}}&path={{.media.path}}">
+    <img class="episode_image" src="/pica/img?fileServer={{.Thumb.FileServer}}&path={{.Thumb.Path}}">
     {{end}}
 </div>
 

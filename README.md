@@ -1,4 +1,4 @@
-# pica.go
+# picago
 
 A simple local server for pica comic reading written with Golang.
 

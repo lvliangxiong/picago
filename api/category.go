@@ -1,44 +1,20 @@
 package api
 
-func Categories(token string) map[string]interface{} {
-	/*
-		{
-		  "code": 200,
-		  "message": "success",
-		  "data": {
-		    "categories": [
-		      {
-		        "title": "援助嗶咔",
-		        "thumb": {
-		          "originalName": "help.jpg",
-		          "path": "help.jpg",
-		          "fileServer": "https://wikawika.xyz/static/"
-		        },
-		        "isWeb": true,
-		        "active": true,
-		        "link": "https://donate.wikawika.xyz"
-		      },
-		      {
-		        "title": "嗶咔小禮物",
-		        "thumb": {
-		          "originalName": "picacomic-gift.jpg",
-		          "path": "picacomic-gift.jpg",
-		          "fileServer": "https://wikawika.xyz/static/"
-		        },
-		        "isWeb": true,
-		        "link": "https://gift-web.wikawika.xyz",
-		        "active": true
-		      },
-		      ...
-		    ]
-		  }
-		}
-	*/
-	result := send("/categories", "GET", token, "")
+import (
+	"encoding/json"
+	"github.com/lvliangxiong/picago/api/model"
+)
 
-	if code := result.Get("code").MustInt(); code != 200 {
-		return errorOutput(code, result.Get("error").MustString(), result.Get("message").MustString())
+// FetchCategories tries to fetch category information from pica server, return a model.Category slice if successful.
+func FetchCategories(token string) (int, interface{}, []model.Category) {
+	resultMap := send("/categories", "GET", token, "")
+
+	if statusCode := int(resultMap["code"].(float64)); statusCode != 200 {
+		return statusCode, resultMap["message"], nil
 	}
 
-	return successOutput(result.Get("data").Get("categories"))
+	catArrJsonString, _ := json.Marshal(resultMap["data"].(map[string]interface{})["categories"])
+	categories := make([]model.Category, 48, 48)
+	json.Unmarshal(catArrJsonString, &categories)
+	return 200, "success", categories
 }

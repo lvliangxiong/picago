@@ -4,30 +4,24 @@ import (
 	"fmt"
 )
 
-func Login(username string, password string) map[string]interface{} {
+// Login tries to login the pica server, return token if successful.
+func Login(username string, password string) (code int, message interface{}, token string) {
 	if username == "" || password == "" {
-		return errorOutput(400, "110", "Please provide email and password to login!")
+		code = 400
+		message = "Please provide email and password to login!"
+		return
 	}
 
-	/*
-		{
-		  "code": 200,
-		  "message": "success",
-		  "data": {
-			"token": "..."
-		  }
-		}
+	resultMap := send(
+		"/auth/sign-in", "POST", "",
+		fmt.Sprintf(`{"email":"%s", "password":"%s"}`, username, password),
+	)
 
-		or
-
-		{"code":400,"error":"1004","message":"invalid email or password","detail":":("}
-	*/
-	result := send("/auth/sign-in", "POST", "",
-		fmt.Sprintf(`{"email":"%s", "password":"%s"}`, username, password))
-
-	if code := result.Get("code").MustInt(); code != 200 {
-		return errorOutput(code, result.Get("error").MustString(), result.Get("message").MustString())
+	if statusCode := int(resultMap["code"].(float64)); statusCode != 200 {
+		code = statusCode
+		message = resultMap["message"]
+		return
 	}
 
-	return successOutput(result.Get("data").Get("token"))
+	return 200, "success", resultMap["data"].(map[string]interface{})["token"].(string)
 }

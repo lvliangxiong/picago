@@ -1,0 +1,11 @@
+{
+  "active": true,
+  "isWeb": true,
+  "link": "https://donate.wikawika.xyz",
+  "thumb": {
+    "fileServer": "https://wikawika.xyz/static/",
+    "originalName": "help.jpg",
+    "path": "help.jpg"
+  },
+  "title": "援助嗶咔"
+}

@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/lvliangxiong/pica.go/conf"
+	"github.com/lvliangxiong/picago/conf"
 )
 
 func CopyMap(m map[string]interface{}) map[string]interface{} {
@@ -36,14 +36,6 @@ func ComputeHmacSha256(message string, secret string) string {
 	h.Write([]byte(message))
 	sha := hex.EncodeToString(h.Sum(nil))
 	return sha
-}
-
-// Append all elements in slice2 to slice1
-func MergeSlices(slice1 []interface{}, slice2 []interface{}) []interface{} {
-	for _, item := range slice2 {
-		slice1 = append(slice1, item)
-	}
-	return slice1
 }
 
 func GetToken(ctx *gin.Context) (string, error) {

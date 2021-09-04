@@ -1,9 +1,18 @@
 package main
 
 import (
-	"github.com/lvliangxiong/pica.go/router"
+	"embed"
+
+	"github.com/lvliangxiong/picago/router"
+)
+
+var (
+	//go:embed static/*
+	staticResources embed.FS
+	//go:embed template
+	templates embed.FS
 )
 
 func main() {
-	router.Init()
+	router.Init(staticResources, templates)
 }

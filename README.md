@@ -1,3 +1,5 @@
+Since an official [web-end](https://manhuapica.com/) has been supported, this app won't be updated now.
+
 # picago
 
 A simple local server for pica comic reading written with Golang.
